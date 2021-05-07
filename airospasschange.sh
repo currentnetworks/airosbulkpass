@@ -25,8 +25,11 @@ DEVICELIST=(
 TIMESTAMP=$(date +"%m-%d-%Y at %H.%M.%S %p") 
 DEBUG=0
 MAXDEBUG=0
-LOGNAME="~/Documents/AirOS_PassChange/AirOS_PassChange - ${TIMESTAMP}.log"
-DEBUGLOGNAME="~/Documents/AirOS_PassChange/AirOS_PassChangeDebug - ${TIMESTAMP}.log"
+LOGDIRECTORY="$HOME/Documents/AirOS_PassChange/"
+LOGFILENAME="AirOS_PassChange - ${TIMESTAMP}.log"
+DEBUGFILENAME="AirOS_PassChangeDebug - ${TIMESTAMP}.log"
+LOGNAME=$LOGDIRECTORY$LOGFILENAME
+DEBUGLOGNAME=$LOGDIRECTORY$DEBUGFILENAME
 
 ##########
 #COMMANDS AS VARIABLES
@@ -47,7 +50,7 @@ SAVECONFIG="cfgmtd -f /tmp/system.cfg -w \r"
 ##########
 #LOG HOUSEKEEPING
 ##########
-mkdir -p ~/Documents/AirOS_PassChange
+mkdir -p ${LOGDIRECTORY} #~/Documents/AirOS_PassChange/
 touch "$LOGNAME"
 echo -e "\n$(date) - Starting Password Change on Hosts" >> "$LOGNAME"
 echo "$(date) - Starting Password Change on Hosts"
