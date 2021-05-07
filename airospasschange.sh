@@ -47,7 +47,7 @@ SAVECONFIG="cfgmtd -f /tmp/system.cfg -w \r"
 ##########
 #LOG HOUSEKEEPING
 ##########
-
+mkdir -p ~/Documents/AirOS_PassChange
 touch "$LOGNAME"
 echo -e "\n$(date) - Starting Password Change on Hosts" >> "$LOGNAME"
 echo "$(date) - Starting Password Change on Hosts"
