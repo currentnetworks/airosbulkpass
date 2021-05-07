@@ -25,8 +25,8 @@ DEVICELIST=(
 TIMESTAMP=$(date +"%m-%d-%Y at %H.%M.%S %p") 
 DEBUG=0
 MAXDEBUG=0
-LOGNAME="AirOS_PassChange - ${TIMESTAMP}.log"
-DEBUGLOGNAME="AirOS_PassChangeDebug - ${TIMESTAMP}.log"
+LOGNAME="~/Documents/AirOS_PassChange/AirOS_PassChange - ${TIMESTAMP}.log"
+DEBUGLOGNAME="~/Documents/AirOS_PassChange/AirOS_PassChangeDebug - ${TIMESTAMP}.log"
 
 ##########
 #COMMANDS AS VARIABLES
