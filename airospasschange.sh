@@ -43,16 +43,16 @@ CHANGEPASS="passwd -a md5crypt\r"
 #COMMAND TO COPY SYSTEM.CFG TO NEW WITHOUT PASSWORD AND THEN OVERWRITE SYSTEM CONFIG 
 COPYMOVECONFIG="grep -F -v users.1.password= /tmp/system.cfg > /tmp/system.cfg.new && mv /tmp/system.cfg.new /tmp/system.cfg \r"
 
-#COMMAND TO COPY SYSTEM CONFIG TO TMP WITHOUT USERNAME
-COPYMOVECONFIGUSER="grep -F -v users.1.name= /tmp/system.cfg > /tmp/system.cfg.new && mv /tmp/syste.cfg.new /tmp/system.cfg \r"
-
-#COMMAND TO WRITE USERNAME TO CONFIG
-COPYUSERTOFILE="echo users.1.name=$USER >> /tmp/system.cfg \r"
-
 
 #COMMAND TO COPY UNIX USER PASSWORD INTO SYSTEM.CFG
 COPYPASSWORD="echo users.1.password=\`grep $USER /etc/passwd | cut -d: -f2 | cut -d: -f1\` >> /tmp/system.cfg \r"
 
+
+#COMMAND TO COPY SYSTEM CONFIG TO TMP WITHOUT USERNAME
+COPYMOVECONFIGUSER="grep -F -v users.1.name= /tmp/system.cfg > /tmp/system.cfg.new && mv /tmp/system.cfg.new /tmp/system.cfg \r"
+
+#COMMAND TO WRITE USERNAME TO CONFIG
+COPYUSERTOFILE="echo users.1.name=$NEWUSER >> /tmp/system.cfg \r"
 
 
 #AIROS COMMAND TO SAVE THE NEW CONFIG
