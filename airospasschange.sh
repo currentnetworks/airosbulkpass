@@ -10,13 +10,11 @@
 ##########
 USER="ubnt"
 PASS="DEADBEEF"
-CHANGEUSER=0
+CHANGEUSER=1
 NEWUSER="syntaxerror"
 NEWPASS="DEADBEEF"
 DEVICELIST=(
 	192.168.1.20 
-	192.168.1.21 
-	192.168.1.22
 )
 
 
@@ -25,7 +23,7 @@ DEVICELIST=(
 #OTHER VARIABLES
 ##########
 TIMESTAMP=$(date +"%m-%d-%Y at %H.%M.%S %p") 
-DEBUG=0
+DEBUG=1
 MAXDEBUG=0
 LOGDIRECTORY="$HOME/Documents/AirOS_PassChange/"
 LOGFILENAME="AirOS_PassChange - ${TIMESTAMP}.log"
@@ -40,19 +38,18 @@ DEBUGLOGNAME=$LOGDIRECTORY$DEBUGFILENAME
 #AIROSCOMMAND TO CREATE AN MD5 HASH W/ SALT PASSWORD
 CHANGEPASS="passwd -a md5crypt\r"
 
-#COMMAND TO COPY SYSTEM.CFG TO NEW WITHOUT PASSWORD AND THEN OVERWRITE SYSTEM CONFIG 
-COPYMOVECONFIG="grep -F -v users.1.password= /tmp/system.cfg > /tmp/system.cfg.new && mv /tmp/system.cfg.new /tmp/system.cfg \r"
 
 
-#COMMAND TO COPY UNIX USER PASSWORD INTO SYSTEM.CFG
+if [ $CHANGEUSER == 1 ]; then 
+	#REMOVE USERNAME AND PASSWORD FROM CONFIG AND COPY TO TEMP CONFIG
+	COPYMOVECONFIG="grep -F -v users.1.name= /tmp/system.cfg | grep -F -v users.1.password= > /tmp/system.cfg.new && mv /tmp/system.cfg.new /tmp/system.cfg \r"
+else 
+	#COMMAND TO COPY SYSTEM.CFG TO NEW WITHOUT PASSWORD AND THEN OVERWRITE SYSTEM CONFIG 
+	COPYMOVECONFIG="grep -F -v users.1.password= /tmp/system.cfg > /tmp/system.cfg.new && mv /tmp/system.cfg.new /tmp/system.cfg \r"
+fi
+
 COPYPASSWORD="echo users.1.password=\`grep $USER /etc/passwd | cut -d: -f2 | cut -d: -f1\` >> /tmp/system.cfg \r"
-
-
-#COMMAND TO COPY SYSTEM CONFIG TO TMP WITHOUT USERNAME
-COPYMOVECONFIGUSER="grep -F -v users.1.name= /tmp/system.cfg > /tmp/system.cfg.new && mv /tmp/system.cfg.new /tmp/system.cfg \r"
-
-#COMMAND TO WRITE USERNAME TO CONFIG
-COPYUSERTOFILE="echo users.1.name=$NEWUSER >> /tmp/system.cfg \r"
+COPYUSER="echo users.1.name=$NEWUSER >> /tmp/system.cfg \r"
 
 
 #AIROS COMMAND TO SAVE THE NEW CONFIG
@@ -143,7 +140,7 @@ for IPADDR in ${DEVICELIST[@]}
 
 				#WAIT FOR COMFIRMATION OF PASSWORD CHANGE
 				expect {
-					"Password for $USER changed by $USER" { }
+					"Password for $USER changed by $USER" {}
 
 					#FAIL BECAUSE THE PASSWORD DIDNT CHANGE OR SOMETHING WENT WRONG
 					timeout {
@@ -178,22 +175,31 @@ for IPADDR in ${DEVICELIST[@]}
 						expect "*#"
 
 						#SEND COMMANDS TO COPY THE UNIX USER PASSWORD TO THE CONFIG FILE
-						send -- "$COPYPASSWORD"
+						if { $CHANGEUSER == 1 } {
+							send -- "$COPYUSER"
+							expect "*#"
+						} 
+						send -- "$COPYPASSWORD"	
+						
 
 						#WAIT FOR PROMPT
-						expect "*#"
+						#expect "*#"
 
 						#SEND COMMAND TO COPY CONFIG FILE 
-						send -- "$COPYMOVECONFIGUSER"
+						#send -- "$COPYMOVECONFIGUSER"
 
 						#WAIT FOR PROMPT
-						expect "*#"
+						#expect "*#"
 
 						#SEND INSERT USERNAME
-						send -- "$COPYUSERTOFILE"
+						#send -- "$COPYUSERTOFILE"
 
 						#WAIT FOR PROMPT
 						expect "*#"
+						
+						send -- "cat /tmp/system.cfg | grep users.1 \r"
+
+						expect "*#" 
 
 						#SEND COMMANDS TO INVOKE UBNT SAVE CONFIG APPLICATION
 						send -- "$SAVECONFIG"
