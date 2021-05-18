@@ -8,7 +8,7 @@
 ##########
 #User Variables
 ##########
-USER="ubnt"
+USER="syntaxerror"
 PASS="DEADBEEF"
 CHANGEUSER=1
 NEWUSER="syntaxerror"
@@ -54,6 +54,9 @@ COPYUSER="echo users.1.name=$NEWUSER >> /tmp/system.cfg \r"
 
 #AIROS COMMAND TO SAVE THE NEW CONFIG
 SAVECONFIG="cfgmtd -f /tmp/system.cfg -w \r"
+
+#SOFT RESTART 
+SOFTRESTART="/usr/etc/rc.d/rc.softrestart save \r \r"
 
 ##########
 #LOG HOUSEKEEPING
@@ -152,72 +155,86 @@ for IPADDR in ${DEVICELIST[@]}
 					}
 				}
 
+				expect "*#"
+
+####################################
+#SECTION IN TESTING BUT NOT IN USE
+####################################
+#				#WAIT FOR PROMPT
+#				#expect "*#" {
+#				#	send -- "grep $USER /etc/passwd | cut -d: -f2 | cut -d: -f1 \r"
+#
+#					#sleep 3
+#					
+#					 #{
+#						#set output "\$expect_out(0,string)"
+#						#set UNIXHASH ""
+#						#set result [regexp {\$(.*), 'm'} \$output ignore UNIXHASH]
+#
+#						#puts "\n\n--UNIXHASH--> \$UNIXHASH <--UNIXHASH--\n"
+#
+#						#WAIT FOR PROMPT
+#						#expect "*#"
+#						#SEND COMMANDS TO COPY OLD CONFIG TO NEW CONFIG WITHOUT PASSWORD 
+#						#DELETE OLD CONFIG, MOVE NEW CONFIG CORRECT LOCATION
+#
+####################################
+
+
+				send -- "$COPYMOVECONFIG"
+
 				#WAIT FOR PROMPT
-				#expect "*#" {
-				#	send -- "grep $USER /etc/passwd | cut -d: -f2 | cut -d: -f1 \r"
+				expect "*#"
 
-					#sleep 3
-					
-					expect "*#" {
-						#set output "\$expect_out(0,string)"
-						#set UNIXHASH ""
-						#set result [regexp {\$(.*), 'm'} \$output ignore UNIXHASH]
+				#SEND COMMANDS TO COPY THE UNIX USER PASSWORD TO THE CONFIG FILE
+				if { $CHANGEUSER == 1 } {
+					send -- "$COPYUSER"
+					expect "*#"
+				} 
+				send -- "$COPYPASSWORD"	
+				
 
-						#puts "\n\n--UNIXHASH--> \$UNIXHASH <--UNIXHASH--\n"
+				#WAIT FOR PROMPT
+				#expect "*#"
 
-						#WAIT FOR PROMPT
-						expect "*#"
-						#SEND COMMANDS TO COPY OLD CONFIG TO NEW CONFIG WITHOUT PASSWORD 
-						#DELETE OLD CONFIG, MOVE NEW CONFIG CORRECT LOCATION
-						send -- "$COPYMOVECONFIG"
+				#SEND COMMAND TO COPY CONFIG FILE 
+				#send -- "$COPYMOVECONFIGUSER"
 
-						#WAIT FOR PROMPT
-						expect "*#"
+				#WAIT FOR PROMPT
+				#expect "*#"
 
-						#SEND COMMANDS TO COPY THE UNIX USER PASSWORD TO THE CONFIG FILE
-						if { $CHANGEUSER == 1 } {
-							send -- "$COPYUSER"
-							expect "*#"
-						} 
-						send -- "$COPYPASSWORD"	
-						
+				#SEND INSERT USERNAME
+				#send -- "$COPYUSERTOFILE"
 
-						#WAIT FOR PROMPT
-						#expect "*#"
+				#WAIT FOR PROMPT
+				expect "*#"
+				
+				send -- "cat /tmp/system.cfg | grep users.1 \r"
 
-						#SEND COMMAND TO COPY CONFIG FILE 
-						#send -- "$COPYMOVECONFIGUSER"
+				expect "*#" 
 
-						#WAIT FOR PROMPT
-						#expect "*#"
+				#SEND COMMAND TO SAVE CONFIG
+				send -- "$SAVECONFIG"
 
-						#SEND INSERT USERNAME
-						#send -- "$COPYUSERTOFILE"
+				#WAIT FOR PROMPT
+				expect "*#"
 
-						#WAIT FOR PROMPT
-						expect "*#"
-						
-						send -- "cat /tmp/system.cfg | grep users.1 \r"
+				#SEND COMMANDS TO SOFT RESTART
+				send -- "$SOFTRESTART"
 
-						expect "*#" 
+				#WAIT FOR PROMPT
 
-						#SEND COMMANDS TO INVOKE UBNT SAVE CONFIG APPLICATION
-						send -- "$SAVECONFIG"
+				expect "*#" 
 
-						#WAIT FOR PROMPT
-						expect "*#"
+				#EXIT THE SSH SESSION
+				send -- "exit\r"
 
-						#EXIT THE SSH SESSION
-						send -- "exit\r"
+				#SEND LOG INFO FOR SUCCESS
+				set output "$(date) - Host $IPADDR - Success"
+				send_user "\r\$output \n"
+				puts \$log "\$output"
+				close \$log
 
-						#SEND LOG INFO FOR SUCCESS
-						set output "$(date) - Host $IPADDR - Success"
-						send_user "\$output \n"
-						puts \$log "\$output"
-						close \$log
-					}
-
-				#}
 
 		##########
 		#END EXPECT SCRIPT
