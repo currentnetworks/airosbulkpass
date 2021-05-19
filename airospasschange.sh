@@ -6,7 +6,7 @@
 ########################################################################################
 
 ##########
-#VARIABLES CHANGE AT OWN RISK
+#VARIABLES CHANGE AT YOUR OWN RISK
 ##########
 TIMESTAMP=$(date +"%m-%d-%Y at %H.%M.%S %p") 
 DEBUG=1
@@ -61,19 +61,19 @@ do
 		let "linenumber+=1"
 		if [ $linenumber -gt 4 ]
 			then
-				DEVICELIST+=("$line")
+				DEVICELIST+=("$(echo ${line} | sed 's/[^a-zA-Z 0-9]/\\&/g')")
 		elif [ $linenumber == 1 ]
 			then
-				USER="$line"
+				USER="$(echo ${line} | sed 's/[^a-zA-Z 0-9]/\\&/g')"
 		elif [ $linenumber == 2 ] 
 			then
-				PASS="$line"
+				PASS="$(echo ${line} | sed 's/[^a-zA-Z 0-9]/\\&/g')"
 		elif [ $linenumber == 3 ]
 			then
-				NEWUSER="$line"
+				NEWUSER="$(echo ${line} | sed 's/[^a-zA-Z 0-9]/\\&/g')"
 		elif [ $linenumber == 4 ]
 			then
-				NEWPASS="$line"
+				NEWPASS="$(echo ${line} | sed 's/[^a-zA-Z 0-9]/\\&/g')"
 		fi
 	done <$IPLISTFILENAME
 
