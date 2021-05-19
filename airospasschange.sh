@@ -1,8 +1,8 @@
 ########################################################################################
 #!/bin/bash
-#AirOS Password Changes
-#Matthew Holder - matthew@current-networks.com
-#https://www.current-networks.com
+# AirOS Password Changes
+# Matthew Holder - matthew@current-networks.com
+# https://www.current-networks.com
 ########################################################################################
 
 ##########
@@ -13,10 +13,13 @@ PASS="DEADBEEF"
 CHANGEUSER=1
 NEWUSER="syntaxerror"
 NEWPASS="DEADBEEF"
-DEVICELIST=(
-	192.168.1.20 
-)
+IPLISTFILENAME="IP_List-AirOS.txt"
 
+
+
+while IFS= read -r line; do
+	DEVICELIST+=("$line")
+done <$IPLISTFILENAME
 
 
 ##########
