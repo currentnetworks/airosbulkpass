@@ -26,8 +26,8 @@ CHANGEUSER=1
 
 #FIRST RUN
 if [ ! -d "$IPLISTFILEDIRECTORY" ]; then
-	mkdir -p ${LOGDIRECTORY} #~/Documents/AirOS_PassChange/Logs
-	mkdir -p ${IPLISTFILEDIRECTORY} #~/Documents/AirOS_PassChange/ActiveFiles
+	mkdir -p ${LOGDIRECTORY}
+	mkdir -p ${IPLISTFILEDIRECTORY} 
 	touch "$IPLISTFILEDIRECTORY/DeviceAndPassList1.txt"
 	exit
 fi
@@ -49,6 +49,7 @@ IPLISTFILES=($(find -E $IPLISTFILEDIRECTORY -type f -name "*.txt"))
 for IPLISTFILENAME in ${IPLISTFILES[@]}
 do 
 	echo -e "$(date) - Using File $IPLISTFILES " >> "$LOGNAME"
+	echo "Using File $IPLISTFILES"
 	if [ $DEBUG == 1 ]; then 
 		echo -e "\n -----\n Using File $IPLISTFILES " >> "$DEBUGLOGNAME"
 	fi
@@ -117,7 +118,14 @@ do
 #EXPECT SCRIPT TO DO THE WORK
 #BEGINING AND END CANT HAVE TAB FORMATTING
 ##########
-/usr/bin/expect << EOF
+if [ $MAXDEBUG == 1 ]; then
+	FLAGS="-d" 
+else
+	FLAGS=
+fi
+
+/usr/bin/expect $FLAGS << EOF
+
 
 			#SET EXPECT LOGGING
 			log_user $DEBUG
@@ -254,6 +262,7 @@ EOF
 	#END IP LIST LOOP
 	done
 	echo -e "$(date) - Completed File $IPLISTFILES " >> "$LOGNAME"
+	echo "Completed File $IPLISTFILES"
 	if [ $DEBUG == 1 ]; then 
 		echo -e "Completed File $IPLISTFILES \n ----- \n" >> "$DEBUGLOGNAME"
 	fi	
