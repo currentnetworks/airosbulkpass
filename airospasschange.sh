@@ -48,10 +48,10 @@ IPLISTFILES=($(find -E $IPLISTFILEDIRECTORY -type f -name "*.txt"))
 
 for IPLISTFILENAME in ${IPLISTFILES[@]}
 do 
-	echo -e "$(date) - Using File $IPLISTFILES " >> "$LOGNAME"
+	echo -e "$(date) - Using File $IPLISTFILENAME " >> "$LOGNAME"
 	echo "Using File $IPLISTFILES"
 	if [ $DEBUG == 1 ]; then 
-		echo -e "\n -----\n Using File $IPLISTFILES " >> "$DEBUGLOGNAME"
+		echo -e "\n -----\n Using File $IPLISTFILENAME " >> "$DEBUGLOGNAME"
 	fi
 
 	linenumber=0
@@ -261,10 +261,10 @@ fi
 EOF
 	#END IP LIST LOOP
 	done
-	echo -e "$(date) - Completed File $IPLISTFILES " >> "$LOGNAME"
-	echo "Completed File $IPLISTFILES"
+	echo -e "$(date) - Completed File $IPLISTFILENAME " >> "$LOGNAME"
+	echo "Completed File $IPLISTFILENAME"
 	if [ $DEBUG == 1 ]; then 
-		echo -e "Completed File $IPLISTFILES \n ----- \n" >> "$DEBUGLOGNAME"
+		echo -e "Completed File $IPLISTFILENAME \n ----- \n" >> "$DEBUGLOGNAME"
 	fi	
 #END FILE LOOP
 done
