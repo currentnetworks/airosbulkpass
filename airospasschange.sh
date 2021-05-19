@@ -23,6 +23,7 @@ PASS=
 NEWUSER=
 NEWPASS=
 CHANGEUSER=1
+DEVICELIST=()
 
 #FIRST RUN
 if [ ! -d "$IPLISTFILEDIRECTORY" ]; then
@@ -49,11 +50,12 @@ IPLISTFILES=($(find -E $IPLISTFILEDIRECTORY -type f -name "*.txt"))
 for IPLISTFILENAME in ${IPLISTFILES[@]}
 do 
 	echo -e "$(date) - Using File $IPLISTFILENAME " >> "$LOGNAME"
-	echo "Using File $IPLISTFILES"
+	echo "Using File $IPLISTFILENAME"
 	if [ $DEBUG == 1 ]; then 
 		echo -e "\n -----\n Using File $IPLISTFILENAME " >> "$DEBUGLOGNAME"
 	fi
 
+	unset DEVICELIST
 	linenumber=0
 	while IFS= read -r line || [[ -n "$line" ]]; do
 		let "linenumber+=1"
